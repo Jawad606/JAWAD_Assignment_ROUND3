@@ -1,0 +1,13 @@
+.img {
+  background-size: auto;
+}
+
+.ant-dropdown-menu-item:hover {
+  background-color: #fff !important;
+}
+.ant-menu-item {
+  padding-inline: 0 !important;
+}
+.active {
+  color: #1677ff !important;
+}
