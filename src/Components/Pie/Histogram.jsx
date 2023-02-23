@@ -1,21 +1,20 @@
 import React from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import { products } from "../UserInfo/Products";
 ChartJS.register(ArcElement, Tooltip, Legend);
-function Pies() {
-  const data = {
-    labels: products
+function Pies({ data }) {
+  const charts = {
+    labels: JSON.parse(data)
       .sort((a, b) => b.data - a.data)
       .slice(0, 5)
-      .map((item) => item.key),
+      .map((item) => item.Product),
     datasets: [
       {
         label: "Product",
-        data: products
+        data: JSON.parse(data)
           .sort((a, b) => b.data - a.data)
           .slice(0, 5)
-          .map((item) => item.data),
+          .map((item) => item.Price),
         backgroundColor: [
           "#236CD1",
           "#377AD5",
@@ -23,13 +22,7 @@ function Pies() {
           "#6298DE",
           "#8EB5E7",
         ],
-        borderColor: [
-          "#236CD1",
-          "#377AD5",
-          "#4C89DA",
-          "#6298DE",
-          "#8EB5E7",
-        ],
+        borderColor: ["#236CD1", "#377AD5", "#4C89DA", "#6298DE", "#8EB5E7"],
         borderWidth: 1,
       },
     ],
@@ -39,8 +32,8 @@ function Pies() {
     coutout: 0,
   };
   return (
-    <div style={{ height: "500px", width: "500px" }}>
-      <Doughnut data={data} options={options} />
+    <div  style={{ height: "100%", width: "75%" }}>
+      <Doughnut data={charts} options={options} />
     </div>
   );
 }

@@ -9,6 +9,7 @@ import Pies from "../Pie/Histogram";
  * @returns {JSX.Element} A react component
  */
 function UserInfo() {
+  const user = JSON.parse(localStorage.getItem("Data"));
   const { Title } = Typography;
   return (
     <div style={{ padding: "20px" }}>
@@ -23,7 +24,7 @@ function UserInfo() {
         </Title>
 
         <Row
-          gutter={16}
+          gutter={[16, 16]}
           style={{
             paddingBlock: "10px",
             display: "flex",
@@ -31,7 +32,8 @@ function UserInfo() {
           }}
         >
           <Col
-            span={11}
+            xs={24}
+            lg={11}
             style={{
               borderBottom: "1px solid #c6c6c6",
               display: "flex",
@@ -43,12 +45,13 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                John Doe
+                {user ? user.name : ""}
               </Title>
             </div>
           </Col>
           <Col
-            span={11}
+            xs={24}
+            lg={11}
             style={{
               borderBottom: "1px solid #c6c6c6",
               display: "flex",
@@ -60,13 +63,13 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                john.doe@example.com
+                {user ? user.email : ""}
               </Title>
             </div>
           </Col>
         </Row>
         <Row
-          gutter={16}
+          gutter={[16, 16]}
           style={{
             paddingBlock: "10px",
             display: "flex",
@@ -74,7 +77,8 @@ function UserInfo() {
           }}
         >
           <Col
-            span={11}
+            xs={24}
+            lg={11}
             style={{
               borderBottom: "1px solid #c6c6c6",
               display: "flex",
@@ -86,12 +90,13 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                Male
+                {user ? user.gender : ""}
               </Title>
             </div>
           </Col>
           <Col
-            span={11}
+            xs={24}
+            lg={11}
             style={{
               borderBottom: "1px solid #c6c6c6",
               display: "flex",
@@ -103,13 +108,13 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                France
+                {user ? user.country : ""}
               </Title>
             </div>
           </Col>
         </Row>
         <Row
-          gutter={16}
+          gutter={[16, 16]}
           style={{
             paddingBlock: "10px",
             display: "flex",
@@ -117,7 +122,8 @@ function UserInfo() {
           }}
         >
           <Col
-            span={11}
+            xs={24}
+            lg={11}
             style={{
               borderBottom: "1px solid #c6c6c6",
               display: "flex",
@@ -129,12 +135,13 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                34
+                {user ? user.age : ""}
               </Title>
             </div>
           </Col>
           <Col
-            span={11}
+            xs={24}
+            lg={11}
             style={{
               borderBottom: "1px solid #c6c6c6",
               display: "flex",
@@ -146,20 +153,21 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                Paris
+                {user ? user.city : ""}
               </Title>
             </div>
           </Col>
         </Row>
         <Row
-          gutter={16}
+          gutter={[16, 16]}
           style={{
             paddingBlock: "10px",
             display: "flex",
             justifyContent: "space-between",
+            paddingBottom: "10px",
           }}
         >
-          <Col span={11}>
+          <Col xs={24} lg={11} style={{paddingBlock:"15px"}}>
             <Col span={24}>
               {" "}
               <Title level={5}>Top 10: Products</Title>
@@ -172,14 +180,14 @@ function UserInfo() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                width:'100%',
-                height:'500px'
+                width: "100%",
+                height: "100%",
               }}
             >
-              <Histogram_Chart />
+              <Histogram_Chart data={user ? user.data : "[]"} />
             </Col>
           </Col>
-          <Col span={11}>
+          <Col xs={24} lg={11} style={{paddingBlock:"15px"}}>
             <Col span={24}>
               {" "}
               <Title level={5}>Top 5: Products</Title>
@@ -192,12 +200,11 @@ function UserInfo() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                width:'100%',
-                height:'500px'
-
+                width: "100%",
+                height: "100%",
               }}
             >
-              <Pies />
+              <Pies data={user ? user.data : "[]"} />
             </Col>
           </Col>
         </Row>

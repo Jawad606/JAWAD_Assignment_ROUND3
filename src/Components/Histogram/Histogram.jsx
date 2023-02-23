@@ -1,6 +1,5 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { products } from "../UserInfo/Products";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -18,19 +17,19 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-function Histogram_Chart() {
-  const data = {
-    labels: products
+function Histogram_Chart({ data }) {
+  const charts = {
+    labels: JSON.parse(data)
       .sort((a, b) => b.data - a.data)
       .slice(0, 10)
-      .map((item) => item.key),
+      .map((item) => item.Product),
     datasets: [
       {
         label: "Product",
-        data: products
+        data: JSON.parse(data)
           .sort((a, b) => b.data - a.data)
           .slice(0, 10)
-          .map((item) => item.data),
+          .map((item) => item.Price),
         backgroundColor: [
           "#236CD1",
           "#377AD5",
@@ -61,10 +60,15 @@ function Histogram_Chart() {
   };
 
   return (
-    <div>
-      <div>
-        <Bar data={data} style={{ height: "700px", width: "500px" }} />
-      </div>
+    <div
+      style={{
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+      }}
+    >
+      <Bar data={charts} />
     </div>
   );
 }

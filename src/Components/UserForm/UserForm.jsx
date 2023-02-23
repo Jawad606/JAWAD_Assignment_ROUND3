@@ -13,21 +13,44 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import { Country, City } from "country-state-city";
+import { useNavigate } from "react-router-dom";
+import Autocomplete from "@mui/material/Autocomplete";
 import "./UserForm.css";
 function UserForm() {
+  const nevigate = useNavigate();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [age, setAge] = useState("");
-  const [country, setCountry] = useState("");
-  const [city, setCity] = useState("");
+  const [gender, setGender] = useState("");
   const [file, setFile] = useState(null);
   const [jsonData, setJsonData] = useState([]);
   const [textArea, setTextarea] = useState([]);
 
+  const [country, setCountry] = useState("");
+  const [fileName, setFilename] = useState("");
+  const [countryId, setCountryId] = useState("");
+
+  const [city, setCity] = useState("");
+
+  useEffect(() => {
+    setCountryId(
+      String(
+        Country.getAllCountries()
+          .filter((item) => item.name === country)
+          .map((item) => item.isoCode)
+      )
+    );
+  }, [country]);
+  console.log(countryId);
   useEffect(() => {
     setTextarea(JSON.stringify(jsonData, null, 2));
   }, [jsonData]);
 
   const handleFileUpload = (e) => {
     const files = e.target.files;
+
+    setFilename(files[0].name);
     if (files) {
       Papa.parse(files[0], {
         header: true,
@@ -39,29 +62,21 @@ function UserForm() {
       });
     }
   };
-  var countriesAndCities = [
-    {
-      country: "USA",
-      cities: ["New York", "Los Angeles", "Chicago", "Houston"],
-    },
-    {
-      country: "Canada",
-      cities: ["Toronto", "Vancouver", "Montreal", "Ottawa"],
-    },
-    {
-      country: "Mexico",
-      cities: ["Mexico City", "Guadalajara", "Monterrey", "Puebla"],
-    },
-    {
-      country: "Brazil",
-      cities: ["São Paulo", "Rio de Janeiro", "Belo Horizonte", "Brasília"],
-    },
-  ];
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
 
-  console.log(country);
+  const HandleSubmit = (e) => {
+    e.preventDefault();
+    const value = {
+      name: name,
+      age: age,
+      email: email,
+      gender: gender,
+      country: country,
+      city: city,
+      data: textArea,
+    };
+    localStorage.setItem("Data", JSON.stringify(value));
+    nevigate("/JAWAD_Assignment_ROUND3/output");
+  };
   const { Title } = Typography;
   return (
     <div style={{ padding: "20px" }}>
@@ -74,25 +89,29 @@ function UserForm() {
         <Title level={3} style={{ marginTop: 0, marginBottom: 5 }}>
           User
         </Title>
-        <form>
-          <Row gutter={16} style={{ paddingBlock: "10px" }}>
-            <Col span={12}>
+        <form onSubmit={HandleSubmit}>
+          <Row gutter={[16, 16]} style={{ paddingBlock: "10px" }}>
+            <Col xs={24} lg={12}>
               <TextField
                 sx={{ width: "100%" }}
                 id="outlined-basic"
                 label="Name"
+                required
                 variant="outlined"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </Col>
-            <Col span={6}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Gender</InputLabel>
+            <Col xs={12} lg={6}>
+              <FormControl required  fullWidth>
+                <InputLabel id="demo-simple-select-label">Gender </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  value={age}
-                  label="Age"
-                  onChange={handleChange}
+                  value={gender}
+                  required 
+                  label="Gender *"
+                  onChange={(e) => setGender(e.target.value)}
                 >
                   <MenuItem value={"Male"}>Male</MenuItem>
                   <MenuItem value={"Female"}>Female</MenuItem>
@@ -100,15 +119,16 @@ function UserForm() {
                 </Select>
               </FormControl>
             </Col>
-            <Col span={6}>
+            <Col xs={12} lg={6}>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                <InputLabel id="demo-simple-select-label">Age *</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
+                  required 
                   value={age}
-                  label="Age"
-                  onChange={handleChange}
+                  label="Age *"
+                  onChange={(e) => setAge(e.target.value)}
                 >
                   {new Array(120).fill(null).map((_, i) => (
                     <MenuItem value={10}>{i}</MenuItem>
@@ -117,54 +137,57 @@ function UserForm() {
               </FormControl>
             </Col>
           </Row>
-          <Row gutter={16} style={{ paddingBlock: "10px" }}>
-            <Col span={12}>
+          <Row gutter={[16, 16]} style={{ paddingBlock: "10px" }}>
+            <Col xs={24} lg={12}>
               <TextField
                 sx={{ width: "100%" }}
                 id="outlined-basic"
                 label="Email"
+                required 
                 variant="outlined"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </Col>
-            <Col span={6}>
+            <Col xs={12} lg={6}>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Country</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={country}
-                  label="City"
-                  onChange={(e) => setCountry(e.target.value)}
-                >
-                  {countriesAndCities.map((item) => (
-                    <MenuItem value={item.country}>{item.country}</MenuItem>
-                  ))}
-                </Select>
+                <Autocomplete
+                  onChange={(event, value, reason) =>
+                    reason === "clear" ? setCountry("") : setCountry(value.name)
+                  }
+                  clearOnEscape
+                  id="combo-box-demo"
+                  options={Country.getAllCountries()}
+                  // sx={{ width: 300 }}
+                  getOptionLabel={(option) => option.name.toString()}
+                  renderInput={(params) => (
+                    <TextField {...params} required label="Country" />
+                  )}
+                />
               </FormControl>
             </Col>
-            <Col span={6}>
+            <Col xs={12} lg={6}>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">City</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={city}
-                  label="City"
-                  onChange={(e) => setCity(e.target.value)}
-                >
-                  {countriesAndCities
-                    .filter((item) => item.country === country)
-                    .map((item, i) =>
-                      item.cities.map((items) => (
-                        <MenuItem value={items}>{items}</MenuItem>
-                      ))
-                    )}
-                </Select>
+                <Autocomplete
+                  onChange={(event, value, reason) =>
+                    reason === "clear" ? setCity("") : setCity(value.name)
+                  }
+                  disablePortal
+                  className="input1"
+                  id="combo-box-demo"
+                  options={City.getAllCities().filter(
+                    (item) => item.countryCode === countryId
+                  )}
+                  getOptionLabel={(option) => option.name.toString()}
+                  renderInput={(params) => (
+                    <TextField {...params} required  label="City" />
+                  )}
+                />
               </FormControl>
             </Col>
           </Row>
-          <Row gutter={16} style={{ paddingBlock: "10px" }}>
-            <Col span={18} style={{ position: "relative" }}>
+          <Row gutter={[16, 16]} style={{ paddingBlock: "10px" }}>
+            <Col xs={24} lg={18} style={{ position: "relative" }}>
               <input
                 type={"file"}
                 accept=".xlsx, .xls, .csv"
@@ -174,10 +197,12 @@ function UserForm() {
                 id="outlined-basic"
                 label="Upload file..."
                 variant="outlined"
+                 required 
                 style={{ width: "100%", zIndex: 1 }}
+                value={fileName}
               />
             </Col>
-            <Col span={6}>
+            <Col xs={24} lg={6}>
               <Button
                 style={{ width: "100%", height: "100%" }}
                 type="primary"
@@ -187,27 +212,30 @@ function UserForm() {
               </Button>
             </Col>
           </Row>
-          <Row gutter={16} style={{ paddingBlock: "10px" }}>
-            <Col span={24}>
+          <Row gutter={[16, 16]} style={{ paddingBlock: "10px" }}>
+            <Col xs={24} lg={24}>
               <TextField
                 style={{ width: "100%" }}
                 label="Manual Cvs Data Input"
                 multiline
                 rows={6}
                 value={textArea}
+                required
                 variant="outlined"
                 onChange={(e) => setTextarea(e.target.value)}
               />
             </Col>
           </Row>
           <Row
-            gutter={16}
+            gutter={[16, 16]}
             style={{ display: "flex", justifyContent: "center" }}
           >
-            <Col
-              span={6}
-            >
-              <Button style={{ width: "100%", height: "50px" }} type="primary">
+            <Col xs={24} lg={6}>
+              <Button
+                style={{ width: "100%", height: "50px" }}
+                type="primary"
+                htmlType="submit"
+              >
                 Continue
               </Button>
             </Col>
