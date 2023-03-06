@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react";
 import { Button, Form, Input } from "antd";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login } from "../../features/Signin";
 
 /**
  *
@@ -10,6 +12,7 @@ import { useNavigate } from "react-router-dom";
  */
 
 const Login = () => {
+  const dispatch = useDispatch();
   const nevigate = useNavigate();
   // useRef hook to give focus to error message element
   const errRef = useRef();
@@ -30,21 +33,18 @@ const Login = () => {
 
   const onFinish = (values) => {
     // validate email and password
-    if (
-      (values.email === "test_user@meistery.net" ||
-        values.email === "test_user2@meistery.net") &&
-      values.password === "trial_application"
-    ) {
-      setErrMsg("");
-      setSucMsg("Login Successfully");
-      setColor("green");
-      nevigate("/JAWAD_Assignment_ROUND3/input");
-    } else {
-      // set error message if validation fails
-      setErrMsg("Either your password or login is incorrect");
-      setSucMsg("");
-      setColor("red");
-    }
+    dispatch(login(values))
+      .then((res) => {
+        setErrMsg("");
+        setSucMsg("Login Successfully");
+        setColor("green");
+        nevigate("/JAWAD_Assignment_ROUND3/input");
+      })
+      .catch((res) => {
+        setErrMsg("Either your password or login is incorrect");
+        setSucMsg("");
+        setColor("red");
+      });
     // give focus to error message element
     errRef.current.focus();
     // give focus to success message element

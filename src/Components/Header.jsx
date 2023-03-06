@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Header.css";
 import { Layout, Menu } from "antd";
 import { Avatar, Button, Drawer, Typography } from "antd";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { UserOutlined, MenuOutlined } from "@ant-design/icons";
+import { fetchInfo, showList } from "../features/InfoSlice";
+import { logout } from "../features/Signin";
 /**
  * @typedef {object} ButtonProps
  * @property {number} key - Key for the button.
@@ -50,7 +53,13 @@ function Headers() {
   /**
    * Hook to navigate to different routes.
    */
-  const user = JSON.parse(localStorage.getItem("Data"));
+  const dispatch = useDispatch();
+
+  const user_id = JSON.parse(localStorage.getItem("user"));
+  useEffect(() => {
+    dispatch(fetchInfo(user_id));
+  }, [dispatch, user_id]);
+  const { Info } = useSelector(showList);
   const nevigate = useNavigate();
   const [visible, setVisible] = useState(false);
   const showDrawer = () => {
@@ -58,8 +67,13 @@ function Headers() {
   };
 
   const handleSign = () => {
-    nevigate("/JAWAD_Assignment_ROUND3/input");
-    localStorage.clear();
+    dispatch(logout())
+      .then((res) => {
+        console.log(res);
+        nevigate("/JAWAD_Assignment_ROUND3");
+        localStorage.clear();
+      })
+      .catch((err) => console.log(err));
   };
   const RightMenu = ({ mode }) => {
     return (
@@ -85,11 +99,11 @@ function Headers() {
             <Avatar size="large" icon={<UserOutlined />} />
             {/* Render the user's name */}
             <Title level={3} style={{ marginBottom: "5px" }}>
-              {user ? user.name : ""}
+              {Info.username}
             </Title>
             {/* Render the user's email */}
             <Title level={5} style={{ marginTop: "5px", color: "grey" }}>
-              {user ? user.email : ""}
+              {Info.email}
             </Title>
             {/* Render the sign out button */}
             <Button onClick={() => handleSign()}>Sign Out</Button>

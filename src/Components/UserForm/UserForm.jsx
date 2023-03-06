@@ -17,6 +17,9 @@ import { Country, City } from "country-state-city";
 import { useNavigate } from "react-router-dom";
 import Autocomplete from "@mui/material/Autocomplete";
 import "./UserForm.css";
+import { useDispatch, useSelector } from "react-redux";
+import { addInfo } from "../../features/InfoSlice";
+import { addsales, showSales } from "../../features/SalesSlice";
 function UserForm() {
   const nevigate = useNavigate();
   const [name, setName] = useState("");
@@ -42,7 +45,6 @@ function UserForm() {
       )
     );
   }, [country]);
-  console.log(countryId);
   useEffect(() => {
     setTextarea(JSON.stringify(jsonData, null, 2));
   }, [jsonData]);
@@ -62,20 +64,30 @@ function UserForm() {
       });
     }
   };
-
+  const dispatch = useDispatch();
+  const { status } = useSelector(showSales);
   const HandleSubmit = (e) => {
     e.preventDefault();
     const value = {
-      name: name,
+      username: name,
       age: age,
       email: email,
       gender: gender,
       country: country,
       city: city,
-      data: textArea,
     };
-    localStorage.setItem("Data", JSON.stringify(value));
-    nevigate("/JAWAD_Assignment_ROUND3/output");
+    const user_id = JSON.parse(localStorage.getItem("user"));
+    const data = { user_id, value };
+
+    var jsonDataUpdate = jsonData;
+    jsonDataUpdate.forEach(function (itm) {
+      itm.user_id = user_id;
+    });
+    dispatch(addInfo(data)).then((res) => console.log(res));
+    dispatch(addsales(jsonDataUpdate)).then((res) => {
+      console.log(res);
+      nevigate("/JAWAD_Assignment_ROUND3/output");
+    });
   };
   const { Title } = Typography;
   return (
@@ -103,13 +115,13 @@ function UserForm() {
               />
             </Col>
             <Col xs={12} lg={6}>
-              <FormControl required  fullWidth>
+              <FormControl required fullWidth>
                 <InputLabel id="demo-simple-select-label">Gender </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={gender}
-                  required 
+                  required
                   label="Gender *"
                   onChange={(e) => setGender(e.target.value)}
                 >
@@ -121,19 +133,18 @@ function UserForm() {
             </Col>
             <Col xs={12} lg={6}>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Age *</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  required 
-                  value={age}
-                  label="Age *"
-                  onChange={(e) => setAge(e.target.value)}
-                >
-                  {new Array(120).fill(null).map((_, i) => (
-                    <MenuItem value={10}>{i}</MenuItem>
-                  ))}
-                </Select>
+                <Autocomplete
+                  onChange={(event, value, reason) =>
+                    reason === "clear" ? setAge("") : setAge(value)
+                  }
+                  clearOnEscape
+                  id="combo-box-demo"
+                  options={new Array(120).fill(null).map((_, i) => i)}
+                  // sx={{ width: 300 }}
+                  renderInput={(params) => (
+                    <TextField {...params} required label="Age" />
+                  )}
+                />
               </FormControl>
             </Col>
           </Row>
@@ -143,7 +154,7 @@ function UserForm() {
                 sx={{ width: "100%" }}
                 id="outlined-basic"
                 label="Email"
-                required 
+                required
                 variant="outlined"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -180,7 +191,7 @@ function UserForm() {
                   )}
                   getOptionLabel={(option) => option.name.toString()}
                   renderInput={(params) => (
-                    <TextField {...params} required  label="City" />
+                    <TextField {...params} required label="City" />
                   )}
                 />
               </FormControl>
@@ -197,7 +208,7 @@ function UserForm() {
                 id="outlined-basic"
                 label="Upload file..."
                 variant="outlined"
-                 required 
+                required
                 style={{ width: "100%", zIndex: 1 }}
                 value={fileName}
               />
@@ -235,6 +246,7 @@ function UserForm() {
                 style={{ width: "100%", height: "50px" }}
                 type="primary"
                 htmlType="submit"
+                disabled={status === "LoadingAdd" ? true : false}
               >
                 Continue
               </Button>

@@ -4,17 +4,19 @@ import { Doughnut } from "react-chartjs-2";
 ChartJS.register(ArcElement, Tooltip, Legend);
 function Pies({ data }) {
   const charts = {
-    labels: JSON.parse(data)
-      .sort((a, b) => b.data - a.data)
+    labels: data
+      .slice()
+      .sort((a, b) => parseFloat(b.revenue) - parseFloat(a.revenue))
       .slice(0, 5)
-      .map((item) => item.Product),
+      .map((item) => item.product),
     datasets: [
       {
         label: "Product",
-        data: JSON.parse(data)
-          .sort((a, b) => b.data - a.data)
+        data: data
+          .slice()
+          .sort((a, b) => parseFloat(b.revenue) - parseFloat(a.revenue))
           .slice(0, 5)
-          .map((item) => item.Price),
+          .map((item) => item.revenue),
         backgroundColor: [
           "#236CD1",
           "#377AD5",
@@ -32,7 +34,7 @@ function Pies({ data }) {
     coutout: 0,
   };
   return (
-    <div  style={{ height: "100%", width: "75%" }}>
+    <div style={{ height: "100%", width: "75%" }}>
       <Doughnut data={charts} options={options} />
     </div>
   );

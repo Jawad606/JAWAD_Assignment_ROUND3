@@ -1,15 +1,34 @@
 /* eslint-disable react/jsx-pascal-case */
-import React from "react";
+import React, { useEffect } from "react";
 import { Typography, Row, Col } from "antd";
 import Histogram_Chart from "../Histogram/Histogram";
 import Pies from "../Pie/Histogram";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchInfo, showList } from "../../features/InfoSlice";
+import { fetchsales, showSales } from "../../features/SalesSlice";
 
 /**
  * A functional component that displays the personal information of the user
  * @returns {JSX.Element} A react component
  */
 function UserInfo() {
-  const user = JSON.parse(localStorage.getItem("Data"));
+  const dispatch = useDispatch();
+  const user_id = JSON.parse(localStorage.getItem("user"));
+  const { Info } = useSelector(showList);
+  const { sales, status } = useSelector(showSales);
+  useEffect(() => {
+    if (Info.length <= 0) {
+      console.log('abc')
+      dispatch(fetchInfo(user_id));
+    }
+  }, [Info.length, dispatch, user_id]);
+  useEffect(() => {
+    if (sales.length <= 0) {
+      dispatch(fetchsales());
+    }
+  }, [dispatch, sales.length]);
+
+  console.log(sales);
   const { Title } = Typography;
   return (
     <div style={{ padding: "20px" }}>
@@ -45,7 +64,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {user ? user.name : ""}
+                {Info.username}
               </Title>
             </div>
           </Col>
@@ -63,7 +82,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {user ? user.email : ""}
+                {Info.email}
               </Title>
             </div>
           </Col>
@@ -90,7 +109,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {user ? user.gender : ""}
+                {Info.gender}
               </Title>
             </div>
           </Col>
@@ -108,7 +127,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {user ? user.country : ""}
+                {Info.country}
               </Title>
             </div>
           </Col>
@@ -135,7 +154,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {user ? user.age : ""}
+                {Info.age}
               </Title>
             </div>
           </Col>
@@ -153,7 +172,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {user ? user.city : ""}
+                {Info.city}
               </Title>
             </div>
           </Col>
@@ -167,7 +186,7 @@ function UserInfo() {
             paddingBottom: "10px",
           }}
         >
-          <Col xs={24} lg={11} style={{paddingBlock:"15px"}}>
+          <Col xs={24} lg={11} style={{ paddingBlock: "15px" }}>
             <Col span={24}>
               {" "}
               <Title level={5}>Top 10: Products</Title>
@@ -184,10 +203,10 @@ function UserInfo() {
                 height: "100%",
               }}
             >
-              <Histogram_Chart data={user ? user.data : "[]"} />
+              <Histogram_Chart data={sales.length >= 0 ? sales : [{}]} />
             </Col>
           </Col>
-          <Col xs={24} lg={11} style={{paddingBlock:"15px"}}>
+          <Col xs={24} lg={11} style={{ paddingBlock: "15px" }}>
             <Col span={24}>
               {" "}
               <Title level={5}>Top 5: Products</Title>
@@ -204,7 +223,7 @@ function UserInfo() {
                 height: "100%",
               }}
             >
-              <Pies data={user ? user.data : "[]"} />
+              <Pies data={sales.length >= 0 ? sales : [{}]} />
             </Col>
           </Col>
         </Row>

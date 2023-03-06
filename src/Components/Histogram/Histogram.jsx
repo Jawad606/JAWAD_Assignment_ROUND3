@@ -19,17 +19,19 @@ ChartJS.register(
 );
 function Histogram_Chart({ data }) {
   const charts = {
-    labels: JSON.parse(data)
-      .sort((a, b) => b.data - a.data)
+    labels: data
+      .slice()
+      .sort((a, b) => parseFloat(b.revenue) - parseFloat(a.revenue))
       .slice(0, 10)
-      .map((item) => item.Product),
+      .map((item) => item.product),
     datasets: [
       {
         label: "Product",
-        data: JSON.parse(data)
-          .sort((a, b) => b.data - a.data)
+        data: data
+          .slice()
+          .sort((a, b) => parseFloat(b.revenue) - parseFloat(a.revenue))
           .slice(0, 10)
-          .map((item) => item.Price),
+          .map((item) => item.revenue),
         backgroundColor: [
           "#236CD1",
           "#377AD5",
