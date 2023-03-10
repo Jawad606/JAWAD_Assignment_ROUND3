@@ -6,6 +6,7 @@ The form is built using Ant Design components (Typography, Row, Col, Button) and
 @author [jawad]
 */
 import { Typography, Row, Col, Button } from "antd";
+import Snackbar from "@mui/material/Snackbar";
 import React, { useEffect, useState } from "react";
 import Papa from "papaparse";
 import TextField from "@mui/material/TextField";
@@ -14,6 +15,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { Country, City } from "country-state-city";
+import MuiAlert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
 import Autocomplete from "@mui/material/Autocomplete";
 import "./UserForm.css";
@@ -36,6 +38,25 @@ function UserForm() {
 
   const [city, setCity] = useState("");
 
+  const [open, setOpen] = React.useState(false);
+
+  const [msg, setMsg] = useState({ msg: "", color: "" });
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
   useEffect(() => {
     setCountryId(
       String(
@@ -79,19 +100,48 @@ function UserForm() {
     const user_id = JSON.parse(localStorage.getItem("user"));
     const data = { user_id, value };
 
-    var jsonDataUpdate = jsonData;
-    jsonDataUpdate.forEach(function (itm) {
+    var jsonDataUpdate = JSON.parse(textArea);
+    let filtered = jsonDataUpdate.filter(
+      (el) =>
+        Object.keys(el).length &&
+        el !== null &&
+        el?.revenue !== undefined &&
+        el?.product !== undefined
+    );
+    filtered.forEach(function (itm) {
       itm.user_id = user_id;
     });
-    dispatch(addInfo(data)).then((res) => console.log(res));
-    dispatch(addsales(jsonDataUpdate)).then((res) => {
-      console.log(res);
-      nevigate("/JAWAD_Assignment_ROUND3/output");
-    });
+
+    setMsg(
+      filtered.length <= 0 && {
+        msg: "Please choose the correct file",
+        color: "error",
+      }
+    );
+    setOpen( filtered.length <= 0 &&true);
+    if (filtered.length > 0) {
+      dispatch(addInfo(data)).then((res) => console.log(res));
+      dispatch(addsales(jsonDataUpdate)).then((res) => {
+        console.log(res);
+        setMsg({ msg: "Data is added", color: "success" });
+        setOpen(true);
+        nevigate("/JAWAD_Assignment_ROUND3/output");
+      });
+    }
   };
   const { Title } = Typography;
+
   return (
     <div style={{ padding: "20px" }}>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity={msg.color}
+          sx={{ width: "100%" }}
+        >
+          {msg.msg}
+        </Alert>
+      </Snackbar>
       <div
         style={{
           backgroundColor: "#fff",
