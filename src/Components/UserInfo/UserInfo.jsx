@@ -15,7 +15,7 @@ function UserInfo() {
   const dispatch = useDispatch();
   const user_id = JSON.parse(localStorage.getItem("user"));
   const { Info } = useSelector(showList);
-  const { sales } = useSelector(showSales);
+  const { sales, status } = useSelector(showSales);
   useEffect(() => {
     if (Info.length <= 0) {
       dispatch(fetchInfo(user_id));
@@ -27,7 +27,6 @@ function UserInfo() {
     }
   }, [dispatch, sales.length]);
   const { Title } = Typography;
-  console.log("info",Info)
   return (
     <div style={{ padding: "20px" }}>
       <div
@@ -62,7 +61,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {Info[0].username}
+                {Info.map(item=>item.username)}
               </Title>
             </div>
           </Col>
@@ -80,7 +79,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {Info[0].email}
+                {Info.map(item=>item.email)}
               </Title>
             </div>
           </Col>
@@ -107,7 +106,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {Info[0].gender}
+                {Info.map(item=>item.gender)}
               </Title>
             </div>
           </Col>
@@ -125,7 +124,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {Info[0].country}
+                {Info.map(item=>item.country)}
               </Title>
             </div>
           </Col>
@@ -152,7 +151,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {Info[0].age}
+                {Info.map(item=>item.age)}
               </Title>
             </div>
           </Col>
@@ -170,7 +169,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {Info[0].city}
+                {Info.map(item=>item.city)}
               </Title>
             </div>
           </Col>
