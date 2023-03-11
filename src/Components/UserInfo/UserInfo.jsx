@@ -15,10 +15,9 @@ function UserInfo() {
   const dispatch = useDispatch();
   const user_id = JSON.parse(localStorage.getItem("user"));
   const { Info } = useSelector(showList);
-  const { sales, status } = useSelector(showSales);
+  const { sales } = useSelector(showSales);
   useEffect(() => {
     if (Info.length <= 0) {
-      console.log('abc')
       dispatch(fetchInfo(user_id));
     }
   }, [Info.length, dispatch, user_id]);
@@ -27,9 +26,8 @@ function UserInfo() {
       dispatch(fetchsales());
     }
   }, [dispatch, sales.length]);
-
-  console.log(sales);
   const { Title } = Typography;
+  console.log("info",Info)
   return (
     <div style={{ padding: "20px" }}>
       <div
@@ -64,7 +62,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {Info.username}
+                {Info[0].username}
               </Title>
             </div>
           </Col>
@@ -82,7 +80,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {Info.email}
+                {Info[0].email}
               </Title>
             </div>
           </Col>
@@ -109,7 +107,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {Info.gender}
+                {Info[0].gender}
               </Title>
             </div>
           </Col>
@@ -127,7 +125,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {Info.country}
+                {Info[0].country}
               </Title>
             </div>
           </Col>
@@ -154,7 +152,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {Info.age}
+                {Info[0].age}
               </Title>
             </div>
           </Col>
@@ -172,7 +170,7 @@ function UserInfo() {
             </div>
             <div>
               <Title level={5} style={{ color: "grey" }}>
-                {Info.city}
+                {Info[0].city}
               </Title>
             </div>
           </Col>
@@ -203,7 +201,7 @@ function UserInfo() {
                 height: "100%",
               }}
             >
-              <Histogram_Chart data={sales.length >= 0 ? sales : [{}]} />
+              <Histogram_Chart data={sales.length >= 0 ? sales.filter(item=>item.user_id===user_id) : [{}]} />
             </Col>
           </Col>
           <Col xs={24} lg={11} style={{ paddingBlock: "15px" }}>
@@ -223,7 +221,7 @@ function UserInfo() {
                 height: "100%",
               }}
             >
-              <Pies data={sales.length >= 0 ? sales : [{}]} />
+              <Pies data={sales.length >= 0 ? sales.filter(item=>item.user_id===user_id) : [{}]} />
             </Col>
           </Col>
         </Row>

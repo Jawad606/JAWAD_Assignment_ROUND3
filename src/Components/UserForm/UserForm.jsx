@@ -42,9 +42,6 @@ function UserForm() {
 
   const [msg, setMsg] = useState({ msg: "", color: "" });
 
-  const handleClick = () => {
-    setOpen(true);
-  };
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
