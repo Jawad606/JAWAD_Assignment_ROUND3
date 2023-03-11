@@ -82,7 +82,10 @@ function Headers() {
           title={
             <>
               <Avatar icon={<UserOutlined />} />
-              <span className="username">John Doe</span>
+              <span className="username">
+                {" "}
+                {Info.map((item) => item.username)}
+              </span>
             </>
           }
         >
@@ -99,11 +102,11 @@ function Headers() {
             <Avatar size="large" icon={<UserOutlined />} />
             {/* Render the user's name */}
             <Title level={3} style={{ marginBottom: "5px" }}>
-              {Info.username}
+              {Info.map((item) => item.username)}
             </Title>
             {/* Render the user's email */}
             <Title level={5} style={{ marginTop: "5px", color: "grey" }}>
-              {Info.email}
+              {Info.map((item) => item.email)}
             </Title>
             {/* Render the sign out button */}
             <Button onClick={() => handleSign()}>Sign Out</Button>
