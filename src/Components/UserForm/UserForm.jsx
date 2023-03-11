@@ -115,8 +115,9 @@ function UserForm() {
         color: "error",
       }
     );
-    setOpen( filtered.length <= 0 &&true);
+    setOpen( filtered.length <= 0 && true);
     if (filtered.length > 0) {
+      console.log(data)
       dispatch(addInfo(data)).then((res) => console.log(res));
       dispatch(addsales(jsonDataUpdate)).then((res) => {
         console.log(res);

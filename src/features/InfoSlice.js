@@ -11,9 +11,10 @@ export const fetchInfo = createAsyncThunk(
 );
 export const addInfo = createAsyncThunk(
   "Info/addInfo",
-  async ({ id, value }, dispatch, getState) => {
+  async ({ user_id, value }, dispatch, getState) => {
+    console.log("slice  ",user_id)
     return await axios
-      .post(`${baseUrl}/users/${id}`, value, {
+      .post(`${baseUrl}/users/${user_id}`, value, {
         headers: { Authorization: localStorage.getItem("token") },
       })
       .then((res) => res.data);
@@ -62,8 +63,7 @@ const InfoSlice = createSlice({
     },
     [addInfo.fulfilled]: (state, action) => {
       state.status = "success";
-
-      state.Info = action.payload;
+      state.Info.push(action.payload)
     },
     [addInfo.rejected]: (state, action) => {
       state.status = "failed";
