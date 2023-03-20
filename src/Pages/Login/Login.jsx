@@ -35,12 +35,19 @@ const Login = () => {
     // validate email and password
     dispatch(login(values))
       .then((res) => {
-        setErrMsg("");
-        setSucMsg("Login Successfully");
-        setColor("green");
-        nevigate("/JAWAD_Assignment_ROUND3/input");
+        if (res.payload.success) {
+          setErrMsg("");
+          setSucMsg("Login Successfully");
+          setColor("green");
+          nevigate("/JAWAD_Assignment_ROUND3/input");
+        } else {
+          setErrMsg("Either your password or login is incorrect");
+          setSucMsg("");
+          setColor("red");
+        }
       })
       .catch((res) => {
+        console.log(res);
         setErrMsg("Either your password or login is incorrect");
         setSucMsg("");
         setColor("red");

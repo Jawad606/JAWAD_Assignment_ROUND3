@@ -67,7 +67,6 @@ const Signin = createSlice({
     [login.fulfilled]: (state, action) => {
       state.status = "Loginsuccess";
       state.userList = action.payload;
-      console.log(state.status);
       localStorage.setItem("user", JSON.stringify(action.payload.user_id));
       localStorage.setItem("token", "Bearer " +  action.payload.token);
       localStorage.setItem("auth", true);

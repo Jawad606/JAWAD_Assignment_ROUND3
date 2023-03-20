@@ -15,7 +15,7 @@ function UserInfo() {
   const dispatch = useDispatch();
   const user_id = JSON.parse(localStorage.getItem("user"));
   const { Info } = useSelector(showList);
-  const { sales, status } = useSelector(showSales);
+  const { sales } = useSelector(showSales);
   useEffect(() => {
     if (Info.length <= 0) {
       dispatch(fetchInfo(user_id));
