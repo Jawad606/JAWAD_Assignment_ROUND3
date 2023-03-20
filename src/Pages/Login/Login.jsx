@@ -47,7 +47,6 @@ const Login = () => {
         }
       })
       .catch((res) => {
-        console.log(res);
         setErrMsg("Either your password or login is incorrect");
         setSucMsg("");
         setColor("red");

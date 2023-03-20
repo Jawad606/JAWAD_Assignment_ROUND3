@@ -67,8 +67,7 @@ function UserForm() {
       dispatch(fetchsales());
     }
   }, [dispatch, sales.length]);
-
-  const check = Info.length === 0 && sales.length === 0 ? true : false;
+  const check = Info.length === 0 && sales.filter(item=>item.user_id===user_id).length === 0 ? true : false;
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
