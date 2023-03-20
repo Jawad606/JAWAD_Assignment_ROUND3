@@ -20,8 +20,8 @@ import { useNavigate } from "react-router-dom";
 import Autocomplete from "@mui/material/Autocomplete";
 import "./UserForm.css";
 import { useDispatch, useSelector } from "react-redux";
-import { addInfo } from "../../features/InfoSlice";
-import { addsales, showSales } from "../../features/SalesSlice";
+import { addInfo, fetchInfo, showList } from "../../features/InfoSlice";
+import { addsales, fetchsales, showSales } from "../../features/SalesSlice";
 function UserForm() {
   const nevigate = useNavigate();
   const [name, setName] = useState("");
@@ -32,16 +32,20 @@ function UserForm() {
   const [jsonData, setJsonData] = useState([]);
   const [textArea, setTextarea] = useState([]);
 
+  const dispatch = useDispatch();
   const [country, setCountry] = useState("");
   const [fileName, setFilename] = useState("");
   const [countryId, setCountryId] = useState("");
 
   const [city, setCity] = useState("");
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const [msg, setMsg] = useState({ msg: "", color: "" });
 
+  const handleClick = () => {
+    setOpen(true);
+  };
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -50,7 +54,21 @@ function UserForm() {
 
     setOpen(false);
   };
+  const user_id = JSON.parse(localStorage.getItem("user"));
+  const { Info } = useSelector(showList);
+  const { sales } = useSelector(showSales);
+  useEffect(() => {
+    if (Info.length <= 0) {
+      dispatch(fetchInfo(user_id));
+    }
+  }, [Info.length, dispatch, user_id]);
+  useEffect(() => {
+    if (sales.length <= 0) {
+      dispatch(fetchsales());
+    }
+  }, [dispatch, sales.length]);
 
+  const check = Info.length === 0 && sales.length === 0 ? true : false;
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
@@ -82,7 +100,6 @@ function UserForm() {
       });
     }
   };
-  const dispatch = useDispatch();
   const { status } = useSelector(showSales);
   const HandleSubmit = (e) => {
     e.preventDefault();
@@ -94,7 +111,7 @@ function UserForm() {
       country: country,
       city: city,
     };
-    const user_id = JSON.parse(localStorage.getItem("user"));
+
     const data = { user_id, value };
 
     var jsonDataUpdate = JSON.parse(textArea);
@@ -109,22 +126,25 @@ function UserForm() {
       itm.user_id = user_id;
     });
 
-    setMsg(
-      filtered.length <= 0 && {
-        msg: "Please choose the correct file",
-        color: "error",
+    if (check) {
+      if (filtered.length > 0) {
+        dispatch(addInfo(data)).then((res) => console.log(res));
+        dispatch(addsales(jsonDataUpdate)).then((res) => {
+          setMsg({ msg: "Data is added", color: "success" });
+          handleClick();
+          nevigate("/JAWAD_Assignment_ROUND3/output");
+        });
       }
-    );
-    setOpen( filtered.length <= 0 && true);
-    if (filtered.length > 0) {
-      console.log(data)
-      dispatch(addInfo(data)).then((res) => console.log(res));
-      dispatch(addsales(jsonDataUpdate)).then((res) => {
-        console.log(res);
-        setMsg({ msg: "Data is added", color: "success" });
-        setOpen(true);
-        nevigate("/JAWAD_Assignment_ROUND3/output");
-      });
+    } else {
+      setMsg(
+        filtered.length <= 0
+          ? {
+              msg: "Please choose the correct file",
+              color: "error",
+            }
+          : { msg: "Data Already Added", color: "error" }
+      );
+      handleClick();
     }
   };
   const { Title } = Typography;
