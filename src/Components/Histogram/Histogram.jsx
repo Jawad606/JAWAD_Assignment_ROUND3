@@ -18,19 +18,31 @@ ChartJS.register(
   Legend
 );
 function Histogram_Chart({ data }) {
+  let result = data.reduce(function (acc, obj) {
+    let key = obj.product;
+    if (!acc[key]) {
+      acc[key] = { product: key, revenue: 0 };
+    }
+    acc[key].revenue += parseFloat(obj.revenue);
+    return acc;
+  }, {});
+  
+  result = Object.values(result).sort(function (a, b) {
+    return b.revenue - a.revenue;
+  });
+  
+  result = result.map(function (obj) {
+    return { product: obj.product, revenue: obj.revenue };
+  });
+  console.log(result)
   const charts = {
-    labels: data
-      .slice()
-      .sort((a, b) => parseFloat(b.revenue) - parseFloat(a.revenue))
-      .slice(0, 10)
+    labels: result
       .map((item) => item.product),
     datasets: [
       {
         label: "Product",
-        data: data
-          .slice()
-          .sort((a, b) => parseFloat(b.revenue) - parseFloat(a.revenue))
-          .slice(0, 10)
+        data: result
+          
           .map((item) => item.revenue),
         backgroundColor: [
           "#236CD1",
