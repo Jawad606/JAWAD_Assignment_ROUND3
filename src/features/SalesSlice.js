@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const baseUrl = "https://odd-blue-dragonfly-veil.cyclic.app";
+const baseUrl = "http://taskbackend.softaligns.com";
 
 export const fetchsales = createAsyncThunk(
   "sales/fetchsales",
