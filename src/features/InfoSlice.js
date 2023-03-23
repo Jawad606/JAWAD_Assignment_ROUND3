@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const baseUrl = "https://taskbackend.kaswa.ai";
+const baseUrl = "https://backend-production-8a59.up.railway.app";
 
 export const fetchInfo = createAsyncThunk(
   "Info/fetchInfo",
