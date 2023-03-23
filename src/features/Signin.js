@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const baseUrl = "http://taskbackend.softaligns.com";
+const baseUrl = "http://taskbackend.kaswa.ai";
 
 export const login = createAsyncThunk(
   "Signin/login",
