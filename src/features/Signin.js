@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const baseUrl = "https://jawadmirzaassignmentround3-production.up.railway.app";
+const baseUrl = "https://odd-blue-dragonfly-veil.cyclic.app";
 
 export const login = createAsyncThunk(
   "Signin/login",
